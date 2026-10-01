@@ -2,8 +2,11 @@ import { useState } from "react";
 import Login from "./components/Login";
 import UserDashboard from "./components/UserDashboard";
 import OwnerDashboard from "./components/OwnerDashboard";
+import AdminDashboard from "./components/AdminDashboard";
+import Signup from "./components/Signup";
 
 function App() {
+  const [showSignup, setShowSignup] = useState(false);
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
 
@@ -21,7 +24,20 @@ function App() {
   };
 
   if (!user) {
-    return <Login onLogin={handleLogin} />;
+    if (showSignup) {
+      return (
+        <Signup
+          onBackToLogin={() => setShowSignup(false)}
+        />
+      );
+    }
+  
+    return (
+      <Login
+        onLogin={handleLogin}
+        onShowSignup={() => setShowSignup(true)}
+      />
+    );
   }
 
   if (user.role === "USER") {
@@ -36,6 +52,14 @@ function App() {
   if (user.role === "STORE_OWNER") {
     return (
       <OwnerDashboard
+        user={user}
+        onLogout={handleLogout}
+      />
+    );
+  }
+  if (user.role === "ADMIN") {
+    return (
+      <AdminDashboard
         user={user}
         onLogout={handleLogout}
       />

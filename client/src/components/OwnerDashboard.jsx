@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getOwnerDashboard } from "../api";
+import ChangePassword from "./ChangePassword";
 
 function OwnerDashboard({ user, onLogout }) {
   const [stores, setStores] = useState([]);
@@ -34,6 +35,9 @@ function OwnerDashboard({ user, onLogout }) {
       <p>Welcome, {user.name}</p>
 
       <button onClick={onLogout}>Logout</button>
+      <hr />
+
+<ChangePassword />
 
       <hr />
 

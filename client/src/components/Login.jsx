@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { loginUser } from "../api";
 
-function Login({ onLogin }) {
+function Login({ onLogin, onShowSignup }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -65,6 +65,11 @@ function Login({ onLogin }) {
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+      <p>Don't have an account?</p>
+
+<button type="button" onClick={onShowSignup}>
+  Create Account
+</button>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import {
     submitRating,
     updateRating,
   } from "../api";
+  import ChangePassword from "./ChangePassword";
 
 function UserDashboard({ user, onLogout }) {
   const [stores, setStores] = useState([]);
@@ -76,6 +77,7 @@ const [ratingError, setRatingError] = useState("");
       <h2>Welcome, {user.name}</h2>
 
       <button onClick={onLogout}>Logout</button>
+      <ChangePassword />
 
       <hr />
 
