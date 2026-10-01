@@ -126,8 +126,62 @@ const getUsers = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [users] = await pool.query(
+      `
+      SELECT
+        u.id,
+        u.name,
+        u.email,
+        u.address,
+        u.role,
+        s.id AS store_id,
+        s.name AS store_name,
+        COALESCE(ROUND(AVG(r.rating), 2), 0) AS store_rating
+      FROM users u
+      LEFT JOIN stores s ON s.owner_id = u.id
+      LEFT JOIN ratings r ON r.store_id = s.id
+      WHERE u.id = ?
+      GROUP BY
+        u.id,
+        u.name,
+        u.email,
+        u.address,
+        u.role,
+        s.id,
+        s.name
+      `,
+      [id]
+    );
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const user = users[0];
+
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Get user error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user",
+    });
+  }
+};
 
 module.exports = {
   createUser,
   getUsers,
+  getUserById,
 };
