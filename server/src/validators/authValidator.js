@@ -31,7 +31,7 @@ const adminUserValidation = [
   ...userFieldsValidation,
   body("role")
   .isIn(["USER", "ADMIN", "STORE_OWNER"])
-    .withMessage("Role must be USER or ADMIN"),
+    .withMessage("Role must be USER, ADMIN or STORE_OWNER"),
 ];
 
 module.exports = {

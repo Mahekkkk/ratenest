@@ -41,12 +41,8 @@ router.post(
     "/stores",
     authenticate,
     authorize("ADMIN"),
-    createStore
-  );
-  router.post(
-    "/stores",
-    authenticate,
-    authorize("ADMIN"),
+    storeValidation,
+    validate,
     createStore
   );
   router.get(

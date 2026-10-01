@@ -10,7 +10,7 @@ const createUser = async (req, res) => {
     if (!allowedRoles.includes(role)) {
       return res.status(400).json({
         success: false,
-        message: "Role must be USER or ADMIN",
+        message: "Role must be USER, ADMIN or STORE_OWNER",
       });
     }
 
