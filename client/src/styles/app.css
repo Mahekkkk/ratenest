@@ -695,7 +695,7 @@ tbody tr:hover {
 /* Modal */
 .modal {
   width: min(34rem, calc(100vw - 2rem));
-  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
   padding: 0;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);

@@ -54,3 +54,4 @@ Seed admin: `node server/createAdmin.js` (see the script for credentials).
 | Date       | Change                                                                 |
 | ---------- | ---------------------------------------------------------------------- |
 | 2026-10-02 | Added Agent.md. Starting frontend rebuild: routing, auth context, design system, role pages. |
+| 2026-10-02 | Frontend rebuilt: react-router routes, AuthContext, role guards, design tokens, all role pages (login, register, admin, user, owner). Server: store validation applied, duplicate route removed. Lint and build pass; not yet tested against a live MySQL. |
