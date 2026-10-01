@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Login from "./components/Login";
 import UserDashboard from "./components/UserDashboard";
+import OwnerDashboard from "./components/OwnerDashboard";
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -32,6 +33,15 @@ function App() {
     );
   }
 
+  if (user.role === "STORE_OWNER") {
+    return (
+      <OwnerDashboard
+        user={user}
+        onLogout={handleLogout}
+      />
+    );
+  }
+  
   return (
     <div>
       <h1>RateNest</h1>
