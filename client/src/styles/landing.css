@@ -1,5 +1,5 @@
 .l-wrap {
-  max-width: 1120px;
+  max-width: var(--max-w);
   margin: 0 auto;
   padding-inline: var(--s-4);
 }

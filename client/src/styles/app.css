@@ -88,7 +88,7 @@ a:hover {
 
 /* Layout */
 .container {
-  max-width: 1120px;
+  max-width: var(--max-w);
   margin: 0 auto;
   padding: var(--s-6) var(--s-4) var(--s-8);
 }
@@ -102,7 +102,7 @@ a:hover {
 }
 
 .topbar-inner {
-  max-width: 1120px;
+  max-width: var(--max-w);
   margin: 0 auto;
   padding: var(--s-3) var(--s-4);
   display: flex;
