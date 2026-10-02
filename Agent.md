@@ -59,3 +59,4 @@ Seed admin: `node server/createAdmin.js` (see the script for credentials).
 | 2026-10-02 | Page max width set to 1450px (`--max-w` token). |
 | 2026-10-02 | Polish: client-side pagination on admin tables, toasts after create/password actions, owner rating breakdown, README screenshots in `docs/screenshots`. |
 | 2026-10-02 | `web-dev-skills/` added to .gitignore and untracked (files stay on disk). |
+| 2026-10-02 | Landing: scroll reveals, hero load-in, floating stars, parallax, scroll progress bar, active nav, animated average demo. Dashboards redesigned with animated SVG charts (stat tiles, area, column, ranked bars, stacked bar, gauge). Admin dashboard API now returns role split, score counts, 14-day trend and top stores. All motion respects prefers-reduced-motion. |

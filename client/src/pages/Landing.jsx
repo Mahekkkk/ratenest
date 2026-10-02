@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
+import CountUp from "../components/CountUp";
+import Reveal from "../components/Reveal";
 import StarRating, { RatingInput } from "../components/StarRating";
 import { useAuth } from "../hooks/useAuth";
+import { prefersReducedMotion, useInView } from "../hooks/useInView";
 import { HOME_BY_ROLE } from "../utils/roles";
 import "../styles/landing.css";
+
+const HEADLINE = ["Know", "which", "stores", "are", "worth", "the", "trip."];
 
 const STEPS = [
   {
@@ -19,6 +24,9 @@ const STEPS = [
     text: "Submit one rating per store. Changed your mind? Update it whenever you like.",
   },
 ];
+
+// Example from the project spec: ratings 5, 4, 4 and 3 average to 4.0.
+const EXAMPLE_RATINGS = [5, 4, 4, 3];
 
 const AUDIENCES = [
   {
@@ -79,36 +87,186 @@ const FAQ_JSON_LD = {
   })),
 };
 
+const SECTIONS = [
+  { id: "how", label: "How it works" },
+  { id: "average", label: "The average" },
+  { id: "roles", label: "Who it is for" },
+  { id: "faq", label: "Questions" },
+];
+
+const FLOATERS = [
+  { left: "6%", top: "14%", size: 28, dur: 9, delay: 0 },
+  { left: "44%", top: "8%", size: 18, dur: 11, delay: -3 },
+  { left: "88%", top: "12%", size: 34, dur: 10, delay: -5 },
+  { left: "52%", top: "78%", size: 22, dur: 12, delay: -2 },
+  { left: "3%", top: "70%", size: 20, dur: 8, delay: -6 },
+  { left: "93%", top: "66%", size: 16, dur: 13, delay: -4 },
+];
+
+function Floaters() {
+  return (
+    <div className="floaters" aria-hidden="true">
+      {FLOATERS.map((item) => (
+        <svg
+          key={item.left + item.top}
+          viewBox="0 0 24 24"
+          className="floater"
+          style={{
+            left: item.left,
+            top: item.top,
+            width: item.size,
+            height: item.size,
+            "--dur": `${item.dur}s`,
+            "--delay": `${item.delay}s`,
+          }}
+        >
+          <path d="M12 2.5l2.9 6.1 6.6.9-4.8 4.6 1.2 6.6L12 17.6l-5.9 3.1 1.2-6.6L2.5 9.5l6.6-.9z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
 function HeroDemo() {
   const [rating, setRating] = useState(4);
+  const cardRef = useRef(null);
+
+  // Card tilts toward the pointer. Skipped for touch and reduced motion.
+  const handleMove = (event) => {
+    const card = cardRef.current;
+    if (!card || event.pointerType !== "mouse" || prefersReducedMotion()) return;
+
+    const box = card.getBoundingClientRect();
+    const x = (event.clientX - box.left) / box.width - 0.5;
+    const y = (event.clientY - box.top) / box.height - 0.5;
+    card.style.setProperty("--ry", `${x * 9}deg`);
+    card.style.setProperty("--rx", `${-y * 9}deg`);
+  };
+
+  const handleLeave = () => {
+    cardRef.current?.style.setProperty("--ry", "0deg");
+    cardRef.current?.style.setProperty("--rx", "0deg");
+  };
 
   return (
-    <div className="demo" aria-labelledby="demo-title">
-      <p className="demo-tag">Example store</p>
-      <h2 id="demo-title">Green Basket Organic Grocery Store</h2>
-      <p className="demo-address">12 MG Road, Pune 411001</p>
+    <div className="demo-wrap" onPointerMove={handleMove} onPointerLeave={handleLeave}>
+      <div className="demo" ref={cardRef} aria-labelledby="demo-title">
+        <p className="demo-tag">Example store</p>
+        <h2 id="demo-title">Green Basket Organic Grocery Store</h2>
+        <p className="demo-address">12 MG Road, Pune 411001</p>
 
-      <div className="demo-row">
-        <span className="demo-label">Overall rating</span>
-        <StarRating value={4.2} />
+        <div className="demo-row">
+          <span className="demo-label">Overall rating</span>
+          <StarRating value={4.2} />
+        </div>
+        <div className="demo-row">
+          <span className="demo-label">Your rating</span>
+          <RatingInput value={rating} onChange={setRating} label="Try rating the example store" />
+        </div>
+        <p className="demo-hint">Tap a star to try it. Nothing is saved.</p>
       </div>
-      <div className="demo-row">
-        <span className="demo-label">Your rating</span>
-        <RatingInput value={rating} onChange={setRating} label="Try rating the example store" />
-      </div>
-      <p className="demo-hint">Tap a star to try it. Nothing is saved.</p>
+    </div>
+  );
+}
+
+function AverageDemo() {
+  const [ref, inView] = useInView({ threshold: 0.35 });
+  const total = EXAMPLE_RATINGS.length;
+  const average = EXAMPLE_RATINGS.reduce((sum, value) => sum + value, 0) / total;
+
+  return (
+    <div ref={ref} className={`avg${inView ? " in" : ""}`}>
+      <p className="avg-number" aria-label={`Average ${average.toFixed(1)} out of 5`}>
+        <CountUp to={average} start={inView} />
+        <span className="avg-of"> / 5</span>
+      </p>
+      <p className="avg-formula">
+        ({EXAMPLE_RATINGS.join(" + ")}) / {total} = {average.toFixed(1)}
+      </p>
+      <ul className="avg-bars" aria-label="Example ratings per score">
+        {[5, 4, 3, 2, 1].map((score, index) => {
+          const count = EXAMPLE_RATINGS.filter((value) => value === score).length;
+
+          return (
+            <li key={score}>
+              <span>
+                {score} {score === 1 ? "star" : "stars"}
+              </span>
+              <span className="avg-track" aria-hidden="true">
+                <span style={{ "--w": count / total, "--i": index }} />
+              </span>
+              <span className="avg-count">{count}</span>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
 
 export default function Landing() {
   const { user } = useAuth();
+  const rootRef = useRef(null);
+  const [active, setActive] = useState("");
+
+  // Scroll position and progress feed CSS custom properties (parallax, progress bar, header shadow).
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      root.style.setProperty("--scroll", String(Math.round(window.scrollY)));
+      root.style.setProperty("--progress", max > 0 ? String(window.scrollY / max) : "0");
+      root.toggleAttribute("data-scrolled", window.scrollY > 8);
+      if (window.scrollY < 200) setActive("");
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [user]);
+
+  // Highlights the nav link of the section currently in the middle of the screen.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+
+    SECTIONS.forEach(({ id }) => {
+      const node = document.getElementById(id);
+      if (node) observer.observe(node);
+    });
+
+    return () => observer.disconnect();
+  }, [user]);
 
   if (user) return <Navigate to={HOME_BY_ROLE[user.role]} replace />;
 
   return (
-    <div className="landing">
+    <div className="landing" ref={rootRef}>
       <script type="application/ld+json">{JSON.stringify(FAQ_JSON_LD)}</script>
+      <div className="progress" aria-hidden="true" />
 
       <a className="skip-link" href="#main">
         Skip to content
@@ -121,9 +279,15 @@ export default function Landing() {
             RateNest
           </Link>
           <nav aria-label="Main" className="l-nav">
-            <a href="#how">How it works</a>
-            <a href="#roles">Who it is for</a>
-            <a href="#faq">Questions</a>
+            {SECTIONS.map((section) => (
+              <a
+                key={section.id}
+                href={`#${section.id}`}
+                aria-current={active === section.id ? "location" : undefined}
+              >
+                {section.label}
+              </a>
+            ))}
           </nav>
           <div className="l-header-actions">
             <Link to="/login" className="btn btn-ghost btn-sm">
@@ -138,14 +302,21 @@ export default function Landing() {
 
       <main id="main">
         <section className="l-hero">
+          <Floaters />
           <div className="l-wrap l-hero-grid">
             <div>
-              <h1>Know which stores are worth the trip.</h1>
-              <p className="l-lead">
+              <h1>
+                {HEADLINE.map((word, index) => (
+                  <span className="word" key={word + index} style={{ "--i": index }}>
+                    {word}{" "}
+                  </span>
+                ))}
+              </h1>
+              <p className="l-lead rise" style={{ "--i": 8 }}>
                 RateNest collects 1 to 5 star ratings from real users, so every store has an
                 honest average you can check before you go.
               </p>
-              <div className="l-cta">
+              <div className="l-cta rise" style={{ "--i": 10 }}>
                 <Link to="/register" className="btn btn-primary">
                   Create a free account
                 </Link>
@@ -154,34 +325,61 @@ export default function Landing() {
                 </Link>
               </div>
             </div>
-            <HeroDemo />
+            <div className="rise rise-card" style={{ "--i": 5 }}>
+              <HeroDemo />
+            </div>
           </div>
+          <a href="#how" className="scroll-cue" aria-label="Scroll to how it works">
+            <span aria-hidden="true" />
+          </a>
         </section>
 
         <section className="l-section" id="how" aria-labelledby="how-h">
           <div className="l-wrap">
-            <h2 id="how-h">How it works</h2>
+            <Reveal as="h2" id="how-h">
+              How it works
+            </Reveal>
             <ol className="steps">
-              {STEPS.map((step) => (
-                <li key={step.title}>
+              {STEPS.map((step, index) => (
+                <Reveal as="li" key={step.title} delay={index * 120}>
                   <h3>{step.title}</h3>
                   <p>{step.text}</p>
-                </li>
+                </Reveal>
               ))}
             </ol>
           </div>
         </section>
 
-        <section className="l-section l-tint" id="roles" aria-labelledby="roles-h">
+        <section className="l-section l-tint" id="average" aria-labelledby="avg-h">
+          <div className="l-wrap avg-grid">
+            <div>
+              <Reveal as="h2" id="avg-h">
+                The average is just arithmetic
+              </Reveal>
+              <Reveal as="p" className="l-sub" delay={100}>
+                A store&apos;s overall rating is the mean of every rating it has received. When
+                someone updates their rating, the average moves with it. Nothing is stored
+                separately, so it can never drift out of date.
+              </Reveal>
+            </div>
+            <Reveal delay={150}>
+              <AverageDemo />
+            </Reveal>
+          </div>
+        </section>
+
+        <section className="l-section" id="roles" aria-labelledby="roles-h">
           <div className="l-wrap">
-            <h2 id="roles-h">One login, three views</h2>
-            <p className="l-sub">
+            <Reveal as="h2" id="roles-h">
+              One login, three views
+            </Reveal>
+            <Reveal as="p" className="l-sub" delay={100}>
               Your role decides what you see after you log in. The server checks it on every
               request, not just the screen.
-            </p>
+            </Reveal>
             <div className="roles">
-              {AUDIENCES.map((item) => (
-                <article key={item.who} className="role">
+              {AUDIENCES.map((item, index) => (
+                <Reveal as="article" key={item.who} className="role" delay={index * 140}>
                   <p className="role-who">{item.who}</p>
                   <h3>{item.title}</h3>
                   <ul>
@@ -189,32 +387,41 @@ export default function Landing() {
                       <li key={point}>{point}</li>
                     ))}
                   </ul>
-                </article>
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="l-section" id="faq" aria-labelledby="faq-h">
+        <section className="l-section l-tint" id="faq" aria-labelledby="faq-h">
           <div className="l-wrap l-narrow">
-            <h2 id="faq-h">Questions</h2>
+            <Reveal as="h2" id="faq-h">
+              Questions
+            </Reveal>
             <div className="faq">
-              {FAQS.map((item) => (
-                <details key={item.q}>
-                  <summary>{item.q}</summary>
-                  <p>{item.a}</p>
-                </details>
+              {FAQS.map((item, index) => (
+                <Reveal as="div" key={item.q} delay={index * 80}>
+                  <details>
+                    <summary>{item.q}</summary>
+                    <p>{item.a}</p>
+                  </details>
+                </Reveal>
               ))}
             </div>
           </div>
         </section>
 
         <section className="l-final" aria-labelledby="final-h">
+          <Floaters />
           <div className="l-wrap l-final-inner">
-            <h2 id="final-h">Rate your first store today.</h2>
-            <Link to="/register" className="btn btn-secondary">
-              Create a free account
-            </Link>
+            <Reveal as="h2" id="final-h">
+              Rate your first store today.
+            </Reveal>
+            <Reveal delay={120}>
+              <Link to="/register" className="btn btn-secondary">
+                Create a free account
+              </Link>
+            </Reveal>
           </div>
         </section>
       </main>

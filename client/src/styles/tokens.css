@@ -35,6 +35,11 @@
 
   --max-w: 1450px;
 
+  /* Categorical chart hues, fixed order (validated reference palette) */
+  --cat-1: #2a78d6;
+  --cat-2: #eb6834;
+  --cat-3: #1baf7a;
+
   /* Spacing (4px base) */
   --s-1: 0.25rem;
   --s-2: 0.5rem;
@@ -86,5 +91,9 @@
     --star-empty: oklch(0.38 0.015 215);
 
     --shadow-pop: 0 12px 32px oklch(0 0 0 / 0.5);
+
+    --cat-1: #3987e5;
+    --cat-2: #d95926;
+    --cat-3: #199e70;
   }
 }
