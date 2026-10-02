@@ -2,7 +2,9 @@
 
 Full-stack store rating platform with role-based authentication and store management.
 
-Users find stores and rate them from 1 to 5. Store owners see who rated their store. Administrators manage users and stores. See [PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md) for the full spec and [Agent.md](Agent.md) for contributor rules.
+Users can find stores and rate them from 1 to 5. Store owners can view ratings and the users who rated their store. Administrators can manage users and stores.
+
+See [PROJECT_DOCUMENTATION.md](PROJECT_DOCUMENTATION.md) for the complete project specification and implementation details.
 
 ## Stack
 
