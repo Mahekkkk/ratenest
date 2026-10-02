@@ -10,6 +10,22 @@ Users find stores and rate them from 1 to 5. Store owners see who rated their st
 - Backend: Node.js, Express 5, JWT, bcryptjs
 - Database: MySQL (`database/schema.sql`)
 
+## Screenshots
+
+| Landing page | Login |
+| --- | --- |
+| ![Landing page](docs/screenshots/landing.png) | ![Login](docs/screenshots/login.png) |
+
+| Normal user: stores and ratings | Store owner dashboard |
+| --- | --- |
+| ![User stores](docs/screenshots/user-stores.png) | ![Owner dashboard](docs/screenshots/owner-dashboard.png) |
+
+| Admin dashboard | Admin users |
+| --- | --- |
+| ![Admin dashboard](docs/screenshots/admin-dashboard.png) | ![Admin users](docs/screenshots/admin-users.png) |
+
+![Admin stores](docs/screenshots/admin-stores.png)
+
 ## Setup
 
 ```bash
@@ -32,4 +48,5 @@ npm run dev               # http://localhost:5173
 - Normal user: search stores by name or address, sort, submit and update a 1 to 5 rating
 - Store owner: average rating and the list of users who rated their store
 - Administrator: totals dashboard, add and list users and stores with filters and sorting, user details
+- Landing page, toast confirmations, paginated admin tables, rating breakdown for store owners
 - Role-based routing in the UI and role checks on every protected API route

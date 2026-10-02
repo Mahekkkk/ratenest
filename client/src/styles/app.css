@@ -396,6 +396,7 @@ textarea:focus-visible {
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  max-width: 960px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
