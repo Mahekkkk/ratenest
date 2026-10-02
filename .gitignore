@@ -4,3 +4,5 @@ node_modules/
 dist/
 # local agent skills (not part of the app)
 web-dev-skills/
+Report.md
+Agent.md
