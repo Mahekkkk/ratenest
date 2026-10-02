@@ -24,7 +24,7 @@ API base: `http://localhost:5000/api` (override in client with `VITE_API_URL`).
 6. Backend enforces auth and roles. Frontend route guards are for UX only.
 7. Only claim features in README/docs that are actually implemented.
 
-## Frontend skills (`web-dev-skills/`)
+## Frontend skills (`web-dev-skills/`, local only, git-ignored)
 
 - `design-taste/` and `prompt.txt` are the standing checklist for UI work: state a Design Read, apply the Operate-mode rules, design all 8 interaction states (default, hover, focus, active, disabled, loading, error, success), respect `prefers-reduced-motion`, no em dashes in copy, no AI-slop defaults.
 - `react-frontend/`, `express-api/`, `innolance-lms-fullstack/` were written for another project (TypeScript, Wouter, Drizzle). Use them for general discipline only. RateNest uses JavaScript, react-router-dom, and MySQL via `mysql2`.
@@ -58,3 +58,4 @@ Seed admin: `node server/createAdmin.js` (see the script for credentials).
 | 2026-10-02 | Added public landing page at `/` (hero with interactive rating demo, how it works, roles, FAQ with JSON-LD, robots.txt). Logged-in users are redirected to their dashboard. |
 | 2026-10-02 | Page max width set to 1450px (`--max-w` token). |
 | 2026-10-02 | Polish: client-side pagination on admin tables, toasts after create/password actions, owner rating breakdown, README screenshots in `docs/screenshots`. |
+| 2026-10-02 | `web-dev-skills/` added to .gitignore and untracked (files stay on disk). |
