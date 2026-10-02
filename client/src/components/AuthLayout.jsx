@@ -1,11 +1,13 @@
+import { Link } from "react-router-dom";
+
 export default function AuthLayout({ title, subtitle, children, footer }) {
   return (
     <div className="auth">
       <aside className="auth-aside">
-        <span className="brand">
+        <Link to="/" className="brand">
           <img src="/favicon.svg" alt="" width="28" height="28" />
           RateNest
-        </span>
+        </Link>
         <div>
           <h2>Rate the stores you visit.</h2>
           <p>
