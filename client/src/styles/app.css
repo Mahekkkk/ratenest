@@ -843,3 +843,95 @@ tbody tr:hover {
     animation: spin 1.6s linear infinite !important;
   }
 }
+
+/* Pagination */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  margin-top: var(--s-4);
+  font-size: var(--text-sm);
+}
+
+.pager-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+/* Rating breakdown */
+.breakdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--s-3);
+}
+
+.breakdown li {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) 2.5rem;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: var(--text-sm);
+}
+
+.breakdown-bar {
+  height: 0.625rem;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.breakdown-bar span {
+  display: block;
+  height: 100%;
+  background: var(--star);
+  border-radius: 999px;
+}
+
+.breakdown-count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Toasts */
+.toasts {
+  position: fixed;
+  right: var(--s-4);
+  bottom: var(--s-4);
+  z-index: var(--z-toast);
+  display: grid;
+  gap: var(--s-2);
+  max-width: calc(100vw - 2rem);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3) var(--s-2) var(--s-4);
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-pop);
+  font-size: var(--text-sm);
+  animation: pop var(--dur) var(--ease-out);
+}
+
+.toast .btn-ghost,
+.toast .btn-ghost:hover:not(:disabled) {
+  background: transparent;
+  color: inherit;
+}
+
+.toast .btn-ghost:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.toast-error {
+  background: var(--danger);
+  color: var(--bg);
+}

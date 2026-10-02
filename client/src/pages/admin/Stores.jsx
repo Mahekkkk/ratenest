@@ -9,6 +9,9 @@ import SortableTable from "../../components/SortableTable";
 import StarRating from "../../components/StarRating";
 import { useAsync } from "../../hooks/useAsync";
 import { useDebounce } from "../../hooks/useDebounce";
+import { usePagination } from "../../hooks/usePagination";
+import { useToast } from "../../hooks/useToast";
+import Pagination from "../../components/Pagination";
 import { getAdminStores } from "../../services/api";
 import AddStoreForm from "./AddStoreForm";
 
@@ -42,6 +45,8 @@ export default function AdminStores() {
     }
   };
 
+  const pager = usePagination(data ? data.data : [], JSON.stringify([debounced, sortBy, order]));
+  const { notify } = useToast();
   const filtering = Object.values(debounced).some(Boolean);
 
   return (
@@ -71,22 +76,24 @@ export default function AdminStores() {
         </EmptyState>
       )}
 
-      {data && data.data.length > 0 && (
+      {pager.total > 0 && (
         <SortableTable
           caption="Stores"
           columns={COLUMNS}
-          rows={data.data}
+          rows={pager.pageRows}
           rowKey={(row) => row.id}
           sortBy={sortBy}
           order={order}
           onSort={handleSort}
         />
       )}
+      <Pagination {...pager} onChange={pager.setPage} />
 
       <Modal open={adding} title="Add store" onClose={() => setAdding(false)}>
         <AddStoreForm
           onCreated={() => {
             setAdding(false);
+            notify("Store created.");
             reload();
           }}
         />

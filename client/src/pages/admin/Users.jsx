@@ -9,6 +9,9 @@ import PageHeader from "../../components/PageHeader";
 import SortableTable from "../../components/SortableTable";
 import { useAsync } from "../../hooks/useAsync";
 import { useDebounce } from "../../hooks/useDebounce";
+import { usePagination } from "../../hooks/usePagination";
+import { useToast } from "../../hooks/useToast";
+import Pagination from "../../components/Pagination";
 import { getAdminUsers } from "../../services/api";
 import { ROLE_LABELS } from "../../utils/validation";
 import AddUserForm from "./AddUserForm";
@@ -53,6 +56,8 @@ export default function AdminUsers() {
     }
   };
 
+  const pager = usePagination(data ? data.data : [], JSON.stringify([debounced, sortBy, order]));
+  const { notify } = useToast();
   const filtering = Object.values(debounced).some(Boolean);
 
   return (
@@ -88,22 +93,24 @@ export default function AdminUsers() {
         </EmptyState>
       )}
 
-      {data && data.data.length > 0 && (
+      {pager.total > 0 && (
         <SortableTable
           caption="Users"
           columns={COLUMNS}
-          rows={data.data}
+          rows={pager.pageRows}
           rowKey={(row) => `${row.id}-${row.store_id ?? "none"}`}
           sortBy={sortBy}
           order={order}
           onSort={handleSort}
         />
       )}
+      <Pagination {...pager} onChange={pager.setPage} />
 
       <Modal open={adding} title="Add user" onClose={() => setAdding(false)}>
         <AddUserForm
           onCreated={() => {
             setAdding(false);
+            notify("User created.");
             reload();
           }}
         />

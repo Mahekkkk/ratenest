@@ -2,6 +2,7 @@ import { useState } from "react";
 import Alert from "../components/Alert";
 import Field from "../components/Field";
 import PageHeader from "../components/PageHeader";
+import { useToast } from "../hooks/useToast";
 import { changePassword } from "../services/api";
 import { validatePassword } from "../utils/validation";
 
@@ -13,6 +14,7 @@ export default function ChangePassword() {
   const [serverError, setServerError] = useState("");
   const [done, setDone] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { notify } = useToast();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -44,6 +46,7 @@ export default function ChangePassword() {
       await changePassword(form.currentPassword, form.newPassword);
       setForm(EMPTY);
       setDone(true);
+      notify("Password updated.");
     } catch (err) {
       setServerError(err.message);
     } finally {

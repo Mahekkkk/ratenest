@@ -3,6 +3,7 @@ import EmptyState from "../../components/EmptyState";
 import Loading from "../../components/Loading";
 import PageHeader from "../../components/PageHeader";
 import SortableTable from "../../components/SortableTable";
+import RatingBreakdown from "../../components/RatingBreakdown";
 import StarRating from "../../components/StarRating";
 import { useAsync } from "../../hooks/useAsync";
 import { getOwnerDashboard } from "../../services/api";
@@ -60,6 +61,17 @@ export default function OwnerDashboard() {
               })}
             </div>
           </section>
+
+          {ratings.length > 0 && (
+            <section aria-labelledby="dist-h">
+              <h2 id="dist-h" className="mb-5">
+                Rating breakdown
+              </h2>
+              <div className="panel panel-narrow">
+                <RatingBreakdown ratings={ratings} />
+              </div>
+            </section>
+          )}
 
           <section aria-labelledby="ratings-h">
             <h2 id="ratings-h" className="mb-5">
