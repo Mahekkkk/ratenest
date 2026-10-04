@@ -1,0 +1,44 @@
+services:
+  backend:
+    image: mahekvatyani/ratenest-backend:latest
+    container_name: ratenest-backend
+    ports:
+      - "5000:5000"
+    environment:
+      PORT: 5000
+      DB_HOST: database
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-root}
+      DB_NAME: ratenest
+      DB_PORT: 3306
+      JWT_SECRET: ${JWT_SECRET:-ratenest_demo_secret_change_in_production}
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    image: mahekvatyani/ratenest-frontend:latest
+    container_name: ratenest-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  database:
+    image: mysql:8.4
+    container_name: ratenest-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: ratenest
+    volumes:
+      - ratenest-db-data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$${DB_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  ratenest-db-data:
